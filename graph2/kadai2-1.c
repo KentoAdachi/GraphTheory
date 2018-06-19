@@ -43,7 +43,7 @@ int main() {
 	while (fscanf(fp, "%d  %d", &i, &j) != EOF) {
 		adjacent[i][j]++;
 		adjacent[j][i]++;
-		printf("%d %d\n", i, j);
+		//printf("%d %d\n", i, j);
 	}
 	//print graph
 	for (i = 0; i < size; i++)
@@ -82,6 +82,7 @@ int main() {
 		//‰½‚©‚ª‚¨‚©‚µ‚¢
 		for (; index >= 0; index--)
 		{
+			//printf("%d %d",index,box[index]);
 			if (cutset(adjacent, size, box[index]) > 1)
 			{
 				printf("x = %d\n‚»‚ê‚ğ—^‚¦‚é•”•ªW‡ = %d\n", x,box[index]);
@@ -168,7 +169,8 @@ void visit(int v, int *yet, int N, int **adjacent)
 	for (w = 0; w<N; w++)
 		if (adjacent[v][w] == 1 && yet[w] == 1)
 			visit(w, yet, N, adjacent);
-}
+}
+
 
 int connect_check(int N, int **adjacent)
 {

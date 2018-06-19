@@ -15,7 +15,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="kadai2-1.c">
+    <Text Include="graph2.txt" />
+    <Text Include="graph3.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="kadai2-2-1.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
