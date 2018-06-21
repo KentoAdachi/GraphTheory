@@ -21,7 +21,7 @@ int main() {
 	int j;//ループカウンタ
 	int size;
 
-	printf("test\n");
+
 
 	FILE *fp = fopen("graph3.txt", "r");
 	fscanf(fp, "%d", &size);
@@ -79,11 +79,9 @@ int main() {
 			}
 		}
 		//一つでも分離集合ならxを表示して終了
-		//何かがおかしい
 		for (; index >= 0; index--)
 		{
-			//printf("%d %d",index,box[index]);
-			if (cutset(adjacent, size, box[index]) > 1)
+			if (cut(adjacent, size, box[index]) > 1)
 			{
 				printf("x = %d\nそれを与える部分集合 = %d\n", x,box[index]);
 				return 0;
@@ -126,7 +124,7 @@ int min_dim(int **adjacent, int N) {
 }
 
 //分離集合を判断
-int cutset(int **adjacent, int N,unsigned char val) {
+int cut(int **adjacent, int N,unsigned char val) {
 	int i;
 	int j;
 
@@ -188,21 +186,3 @@ int connect_check(int N, int **adjacent)
 	free(YetToVisit);
 	return (count);
 }
-//int connect_check(int N, int ** adjacent) {
-//
-//	int i, *YetToVisit, count = 0;
-//	YetToVisit = (int *)malloc(sizeof(int)*N);
-//
-//	for ( i = 0; i < N; i++)
-//		YetToVisit[i] = 1;
-//
-//	for ( i = 0; i < N; i++)
-//		if (YetToVisit[i] == 1) {
-//			count++;
-//			visit(i, YetToVisit, N, adjacent);
-//		}
-//
-//	free(YetToVisit);
-//	return(count);
-//	
-//}
