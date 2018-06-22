@@ -7,23 +7,35 @@
 
 #include<stdio.h>
 #include<stdlib.h>
-#include<string.h>
-#define SIZE 8
+
+#define ALT  //<=コメントアウトを外す
+#ifdef ALT
+#define FILENAME "graph3.txt"
+#else
+#define FILENAME "graph2.txt"
+#endif // ALT
+
 #pragma warning (disable: 4996)
 
 int *subset(unsigned char val, int N);
 void visit(int v, int *yet, int N, int **adjacent);
 int connect_check(int N, int ** adjacent);
-int cutset(int **adjacent, int N, unsigned char val);
+int cut(int **adjacent, int N, unsigned char val);
 int min_dim(int **adjacent, int N);
-int **removeEdge(int **adjacent, int u, int v);
+int **removeEdge(int **adjacent, int N, int u, int v);
+int search(int **adjacent, int N, int position);
+int isBridge(int **adjacent, int N, int u, int v);
+int isEuler(int **adjacent, int N);
+int dim(int **adjacent, int index, int N);
 
 int main() {
 	int i;//ループカウンタ
 	int j;//ループカウンタ
 	int size;
+	printf(FILENAME);
+	printf("\n");
 
-	FILE *fp = fopen("graph3.txt", "r");
+	FILE *fp = fopen(FILENAME, "r");
 	fscanf(fp, "%d", &size);
 
 	int **adjacent = (int **)malloc(sizeof(int *)*size);//隣接接点情報
@@ -56,8 +68,6 @@ int main() {
 	//オイラーグラフを判定
 	if (!isEuler(adjacent,size))
 		exit(1);
-
-
 	search(adjacent,size,0);
 	printf("\n");
 
@@ -68,16 +78,8 @@ int main() {
 int search(int **adjacent,int N,int position) {
 	printf("%d", position);
 
-	int i,j;
+	int i;
 	int *yet = (int *)malloc(sizeof(int)*N);
-
-	//for (i = 0; i < N; i++)
-	//{
-	//	for (j = 0; j < N; j++) {
-	//		printf("%d ", adjacent[i][j]);
-	//	}
-	//	printf("\n");
-	//}
 
 	for ( i = 0; i < N; i++)
 	{
@@ -242,7 +244,6 @@ int *subset(unsigned char val, int N) {
 }
 
 
-//深さ優先探索?
 void visit(int v, int *yet, int N, int **adjacent)
 {
 	int w;
@@ -253,7 +254,7 @@ void visit(int v, int *yet, int N, int **adjacent)
 			visit(w, yet, N, adjacent);
 }
 
-//
+
 int connect_check(int N, int **adjacent)
 {
 	int i,
