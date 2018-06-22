@@ -7,6 +7,7 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #define SIZE 8
 #pragma warning (disable: 4996)
 
@@ -15,6 +16,7 @@ void visit(int v, int *yet, int N, int **adjacent);
 int connect_check(int N, int ** adjacent);
 int cutset(int **adjacent, int N, unsigned char val);
 int min_dim(int **adjacent, int N);
+int **removeEdge(int **adjacent, int u, int v);
 
 int main() {
 	int i;//ループカウンタ
@@ -51,55 +53,121 @@ int main() {
 		}
 		printf("\n");
 	}
-
-	isEuler(adjacent, size);
-
-
 	//オイラーグラフを判定
 	if (!isEuler(adjacent,size))
 		exit(1);
 
 
-	//初期点を選択
-	int position = 0;
-	while (1) {
-		//現在位置の接点を展開
-		//橋以外の接点を選択
-		for ( i = 0; i < size; i++)
-		{
-			if (adjacent[position][i]) {
-			
-			}
-		}
-		//選択できなければ橋を選択
-		//選択できなければ探索を終了
-	}
+	search(adjacent,size,0);
+	printf("\n");
+
 
 }
 
-//
+//探索
+int search(int **adjacent,int N,int position) {
+	printf("%d", position);
+
+	int i,j;
+	int *yet = (int *)malloc(sizeof(int)*N);
+
+	//for (i = 0; i < N; i++)
+	//{
+	//	for (j = 0; j < N; j++) {
+	//		printf("%d ", adjacent[i][j]);
+	//	}
+	//	printf("\n");
+	//}
+
+	for ( i = 0; i < N; i++)
+	{
+		yet[i] = 1;
+	}
+	
+	for ( i = 0; i < N; i++)
+	{
+		if (adjacent[position][i])
+		{
+			if (!isBridge(adjacent, N, position, i))
+			{
+				//printf("橋じゃない\n");
+				printf(" -> ");
+				search(removeEdge(adjacent, N, position, i), N, i);
+				return 0;
+			}
+		}
+	}
+
+	for (i = 0; i < N; i++)
+	{
+		if (adjacent[position][i])
+		{
+			//printf("橋を選択\n");
+			printf(" -> ");
+			search(removeEdge(adjacent, N, position, i), N, i);
+			return 0;
+		}
+	}
+	return 0;
+}
+//uvが橋であることを示す
+//count 使いきった点の数
+int isBridge(int **adjacent,int N,int u,int v){
+	int i, j;
+	int c,count;
+	count = 1;
+	for ( i = 0; i < N; i++)
+	{	
+		c = 0;
+		for ( j = 0; j < N; j++)
+		{
+			if (adjacent[i][j] != 0)c++;
+		}
+		if (c == 0)count++;
+	}
+	
+	if (connect_check(N, removeEdge(adjacent, N, u, v)) > count)return 1;
+	return 0;
+}
+
+
+
+
+//隣接行列を削除
+int **removeEdge(int **adjacent,int N, int u, int v) {
+
+	int **ret = (int **)malloc(sizeof(int *)* N);
+	int i,j;
+	for ( i = 0; i < N; i++)
+	{
+		ret[i] = (int *)malloc(sizeof(int)*N);
+		for ( j	= 0; j < N; j++)
+		{
+			ret[i][j] = adjacent[i][j];
+		}
+	}
+
+	
+	ret[u][v]--;
+	ret[v][u]--;
+	return ret;
+}
 
 
 //オイラーグラフを判定
 int isEuler(int **adjacent, int N) {
 	//すべての点が偶数である
-	int flag = 1;
 	int i;
 	for (i = 0; i < N; i++)
 	{
 		if (dim(adjacent, i, N) % 2 == 1) {
-			flag = 0;
+			printf("オイラーグラフではありません\n");
+			return 0;
 		}
 	}
-	if (flag)
-	{
 		printf("オイラーグラフです\n");
 		return 1;
-	}
-	else {
-		printf("オイラーグラフではありません\n");
-		return 0;
-	}
+
 
 }
 
@@ -174,16 +242,18 @@ int *subset(unsigned char val, int N) {
 }
 
 
+//深さ優先探索?
 void visit(int v, int *yet, int N, int **adjacent)
 {
 	int w;
 	yet[v] = 0;
+	//printf("visited %d\n",v);
 	for (w = 0; w<N; w++)
 		if (adjacent[v][w] == 1 && yet[w] == 1)
 			visit(w, yet, N, adjacent);
 }
 
-
+//
 int connect_check(int N, int **adjacent)
 {
 	int i,

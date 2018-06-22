@@ -22,7 +22,7 @@ int main() {
 	int j;//ループカウンタ
 	int size;
 
-	FILE *fp = fopen("graph3.txt", "r");
+	FILE *fp = fopen("graph2.txt", "r");
 	fscanf(fp, "%d", &size);
 
 	int **adjacent = (int **)malloc(sizeof(int *)*size);//隣接接点情報
